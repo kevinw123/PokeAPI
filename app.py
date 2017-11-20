@@ -4,8 +4,8 @@ from pprint import pprint
 
 app = Flask(__name__)
 
-@app.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
+@app.route('/pokemon/api/v1.0/all/', methods=['GET'])
+def get_all_pokemon():
     data = json.load(open('PokemonData.json'))
     pprint(data)
     return jsonify(data)
