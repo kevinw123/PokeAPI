@@ -12,10 +12,13 @@ def get_all_pokemon():
 
 @app.route('/pokemon/api/v1.0/single/', methods=['GET'])
 def get_one_pokemon():
-    number = request.args.get('number', type = int)
+    number = request.args.get('number', default = None, type = str)
     data = json.load(open('PokemonData.json'))
-    pprint(data[number])
-    return jsonify(data[number])
+    result = []
+    for i in range(0, len(data)):
+        if data[i]["#"] == number:
+            result.append(data[i])
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)

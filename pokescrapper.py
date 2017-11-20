@@ -68,7 +68,7 @@ def main():
         pokemonData = []
         # Iterate through each element of the row
         for t in T.iterchildren():
-            rowElement = t.text_content().strip()
+            rowElement = t.text_content().strip().lstrip("0")
             # Check if row is empty
             if i > 0:
                 # Convert any numerical value to integers
@@ -89,7 +89,7 @@ def main():
                 jsonObj[headers[x]] = str_break(pokemonData[x])
             else:
                 jsonObj[headers[x]] = pokemonData[x]
-                
+
         data.append(jsonObj)
 
     with open('PokemonData.json', 'w') as outfile:
