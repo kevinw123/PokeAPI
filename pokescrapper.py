@@ -1,6 +1,5 @@
 import requests, six
 import lxml.html as lh
-import pandas as pd
 import json
 
 url='http://pokemondb.net/pokedex/all'
@@ -84,8 +83,13 @@ def main():
 
         jsonObj = {}
         for x  in  range(0, len(pokemonData)):
-            jsonObj[headers[x]] = pokemonData[x]
-
+            if headers[x] == "Name":
+                jsonObj[headers[x]] = str_bracket(pokemonData[x])
+            elif headers[x] == "Type":
+                jsonObj[headers[x]] = str_break(pokemonData[x])
+            else:
+                jsonObj[headers[x]] = pokemonData[x]
+                
         data.append(jsonObj)
 
     with open('PokemonData.json', 'w') as outfile:
