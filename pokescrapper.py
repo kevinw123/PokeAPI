@@ -1,10 +1,7 @@
 import requests, six
 import lxml.html as lh
-from itertools import cycle, islice
-from matplotlib import colors
 import pandas as pd
-import matplotlib.pyplot as plt
-
+import json
 
 url='http://pokemondb.net/pokedex/all'
 
@@ -45,20 +42,20 @@ def main():
     #Check the length of the first 12 rows
     [len(T) for T in tr_elements[:12]]
 
-
     tr_elements = doc.xpath('//tr')
 
-    #Create empty list
-    col=[]
+    #Store header strings
+    headers=[]
     i=0
 
-    #For each row, store each first element (header) and an empty list
+    data = []
+    #First row is the header
     for t in tr_elements[0]:
         i+=1
         name=t.text_content()
-        col.append((name,[]))
+        headers.append((name))
 
-    # Since out first row is the header, data is stored on the second row onwards
+    # Since our first row is the header, data is stored on the second row onwards
     for j in range(1, len(tr_elements)):
         # T is our j'th row
         T = tr_elements[j]
@@ -69,33 +66,28 @@ def main():
 
         # i is the index of our column
         i = 0
-
+        pokemonData = []
         # Iterate through each element of the row
         for t in T.iterchildren():
-            data = t.text_content()
+            rowElement = t.text_content()
             # Check if row is empty
             if i > 0:
                 # Convert any numerical value to integers
                 try:
-                    data = int(data)
+                    rowElement = int(rowElement)
                 except:
                     pass
-            # Append the data to the empty list of the i'th column
-            col[i][1].append(data)
+
+            # Build up the json here
+            pokemonData.append({ headers[i] : rowElement})
+
             # Increment i for the next column
             i += 1
 
-    Dict={title:column for (title,column) in col}
-    df=pd.DataFrame(Dict)
+        data.append(pokemonData)
 
-    df['Name'] = df['Name'].apply(str_bracket)
-    df['Type'] = df['Type'].apply(str_break)
-    df.head()
-    df.to_json('PokemonData.json')
-
-    df = pd.read_json('PokemonData.json')
-    df = df.set_index(['#'])
-    df.head()
+    with open('test.json', 'w') as outfile:
+        json.dump(data, outfile)
 
 if __name__ == "__main__":
     main()
