@@ -69,7 +69,7 @@ def main():
         pokemonData = []
         # Iterate through each element of the row
         for t in T.iterchildren():
-            rowElement = t.text_content()
+            rowElement = t.text_content().strip()
             # Check if row is empty
             if i > 0:
                 # Convert any numerical value to integers
@@ -78,15 +78,17 @@ def main():
                 except:
                     pass
 
-            # Build up the json here
-            pokemonData.append({ headers[i] : rowElement})
-
+            pokemonData.append(rowElement)
             # Increment i for the next column
             i += 1
 
-        data.append(pokemonData)
+        jsonObj = {}
+        for x  in  range(0, len(pokemonData)):
+            jsonObj[headers[x]] = pokemonData[x]
 
-    with open('test.json', 'w') as outfile:
+        data.append(jsonObj)
+
+    with open('PokemonData.json', 'w') as outfile:
         json.dump(data, outfile)
 
 if __name__ == "__main__":
